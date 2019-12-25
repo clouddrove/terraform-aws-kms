@@ -62,6 +62,12 @@ variable "is_enabled" {
   description = "Specifies whether the key is enabled."
 }
 
+variable "enabled" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the kms is enabled or disabled."
+}
+
 variable "key_usage" {
   type        = string
   default     = "ENCRYPT_DECRYPT"

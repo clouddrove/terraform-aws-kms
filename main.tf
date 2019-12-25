@@ -18,6 +18,7 @@ module "labels" {
 # Module      : KMS KEY
 # Description : This terraform module creates a KMS Customer Master Key (CMK) and its alias.
 resource "aws_kms_key" "default" {
+  count = var.enabled ? 1 : 0
   description             = var.description
   key_usage               = var.key_usage
   deletion_window_in_days = var.deletion_window_in_days
@@ -30,6 +31,7 @@ resource "aws_kms_key" "default" {
 # Module      : KMS ALIAS
 # Description : Provides an alias for a KMS customer master key..
 resource "aws_kms_alias" "default" {
+  count = var.enabled ? 1 : 0
   name          = coalesce(var.alias, format("alias/%v", module.labels.id))
   target_key_id = aws_kms_key.default.id
 }
