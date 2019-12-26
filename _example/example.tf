@@ -9,6 +9,7 @@ module "kms_key" {
   application = "clouddrove"
   environment = "test"
   label_order = ["environment", "name", "application"]
+  enabled     = true
 
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7
