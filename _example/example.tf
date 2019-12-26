@@ -3,12 +3,13 @@ provider "aws" {
 }
 
 module "kms_key" {
-  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.1"
+  source = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.2"
 
   name        = "kms"
   application = "clouddrove"
   environment = "test"
   label_order = ["environment", "name", "application"]
+  enabled     = true
 
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7

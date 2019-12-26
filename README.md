@@ -70,7 +70,7 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "kms_key" {
-    source                  = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.1"
+    source                  = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.2"
     name                    = "kms"
     application             = "clouddrove"
     environment             = "test"
@@ -174,6 +174,7 @@ Here is an example of how you can use this module in your inventory structure:
 | enable_key_rotation | Specifies whether key rotation is enabled. | bool | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
 | is_enabled | Specifies whether the key is enabled. | bool | `true` | no |
+| enabled | Specifies whether the kms is enabled or disabled. | bool | `true` | no |
 | key_usage | Specifies the intended use of the key. Defaults to ENCRYPT_DECRYPT, and only symmetric encryption and decryption are supported. | string | `ENCRYPT_DECRYPT` | no |
 | label_order | label order, e.g. `name`,`application`. | list | `<list>` | no |
 | name | Name  (e.g. `app` or `cluster`). | string | `` | no |
