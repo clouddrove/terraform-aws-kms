@@ -74,6 +74,7 @@ Here is an example of how you can use this module in your inventory structure:
     name                    = "kms"
     application             = "clouddrove"
     environment             = "test"
+    enabled     = true
     label_order             = ["environment", "name", "application"]
     description             = "KMS key for cloudtrail"
     deletion_window_in_days = 7
