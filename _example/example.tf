@@ -9,7 +9,7 @@ module "kms_key" {
   name        = "kms"
   application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "name", "application"]
+  label_order = ["environment", "application", "name"]
   enabled     = true
 
   description             = "KMS key for cloudtrail"
