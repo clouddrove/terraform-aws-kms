@@ -36,6 +36,12 @@ variable "tags" {
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 }
 
+variable "managedby" {
+  type        = string
+  default     = "anmol@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+}
+
 # Module      : KMS KEY
 # Description : Provides a KMS customer master key.
 variable "deletion_window_in_days" {
