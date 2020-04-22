@@ -86,6 +86,12 @@ variable "alias" {
   description = "The display name of the alias. The name must start with the word `alias` followed by a forward slash."
 }
 
+variable "policy" {
+  type        = string
+  default     = ""
+  description = "A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform."
+}
+
 variable "customer_master_key_spec" {
   type        = string
   default     = "SYMMETRIC_DEFAULT"
