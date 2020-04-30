@@ -72,12 +72,14 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "kms_key" {
-    source                  = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.4"
+    source      = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.4"
+    
     name        = "kms"
     application = "clouddrove"
     environment = "test"
     label_order = ["environment", "application", "name"]
     enabled     = true
+    
     description             = "KMS key for cloudtrail"
     deletion_window_in_days = 7
     enable_key_rotation     = true

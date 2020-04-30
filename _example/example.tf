@@ -5,7 +5,6 @@ provider "aws" {
 module "kms_key" {
   source = "./../"
 
-
   name        = "kms"
   application = "clouddrove"
   environment = "test"
