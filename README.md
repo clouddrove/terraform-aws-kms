@@ -7,14 +7,14 @@
     Terraform AWS KMS
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     This terraform module creates a KMS Customer Master Key (CMK) and its alias.
      </p>
 
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.12-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.13-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,9 +49,9 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
-- [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -72,14 +72,13 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "kms_key" {
-    source      = "git::https://github.com/clouddrove/terraform-aws-kms.git?ref=tags/0.12.4"
-
+    source      = "clouddrove/kms/aws"
+    version     = "0.13.0"
     name        = "kms"
     application = "clouddrove"
     environment = "test"
     label_order = ["environment", "application", "name"]
     enabled     = true
-
     description             = "KMS key for cloudtrail"
     deletion_window_in_days = 7
     enable_key_rotation     = true
@@ -173,22 +172,23 @@ Here is an example of how you can use this module in your inventory structure:
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| alias | The display name of the alias. The name must start with the word `alias` followed by a forward slash. | string | `""` | no |
-| application | Application \(e.g. `cd` or `clouddrove`\). | string | `""` | no |
-| attributes | Additional attributes \(e.g. `1`\). | list(string) | `<list>` | no |
-| deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource. | number | `"10"` | no |
-| description | The description of the key as viewed in AWS console. | string | `"Parameter Store KMS master key"` | no |
-| enable\_key\_rotation | Specifies whether key rotation is enabled. | bool | `"true"` | no |
-| enabled | Specifies whether the kms is enabled or disabled. | bool | `"true"` | no |
-| environment | Environment \(e.g. `prod`, `dev`, `staging`\). | string | `""` | no |
-| is\_enabled | Specifies whether the key is enabled. | bool | `"true"` | no |
-| key\_usage | Specifies the intended use of the key. Defaults to ENCRYPT\_DECRYPT, and only symmetric encryption and decryption are supported. | string | `"ENCRYPT_DECRYPT"` | no |
-| label\_order | label order, e.g. `name`,`application`. | list | `<list>` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | string | `"anmol@clouddrove.com"` | no |
-| name | Name  \(e.g. `app` or `cluster`\). | string | `""` | no |
-| policy | A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform. | string | `""` | no |
-| tags | Additional tags \(e.g. map\(`BusinessUnit`,`XYZ`\). | map(string) | `<map>` | no |
+|------|-------------|------|---------|:--------:|
+| alias | The display name of the alias. The name must start with the word `alias` followed by a forward slash. | `string` | `""` | no |
+| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
+| attributes | Additional attributes (e.g. `1`). | `list(string)` | `[]` | no |
+| customer\_master\_key\_spec | Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports. Valid values: SYMMETRIC\_DEFAULT, RSA\_2048, RSA\_3072, RSA\_4096, ECC\_NIST\_P256, ECC\_NIST\_P384, ECC\_NIST\_P521, or ECC\_SECG\_P256K1. Defaults to SYMMETRIC\_DEFAULT. | `string` | `"SYMMETRIC_DEFAULT"` | no |
+| deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource. | `number` | `10` | no |
+| description | The description of the key as viewed in AWS console. | `string` | `"Parameter Store KMS master key"` | no |
+| enable\_key\_rotation | Specifies whether key rotation is enabled. | `bool` | `true` | no |
+| enabled | Specifies whether the kms is enabled or disabled. | `bool` | `true` | no |
+| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
+| is\_enabled | Specifies whether the key is enabled. | `bool` | `true` | no |
+| key\_usage | Specifies the intended use of the key. Defaults to ENCRYPT\_DECRYPT, and only symmetric encryption and decryption are supported. | `string` | `"ENCRYPT_DECRYPT"` | no |
+| label\_order | label order, e.g. `name`,`application`. | `list` | `[]` | no |
+| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| policy | A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform. | `string` | `""` | no |
+| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(string)` | `{}` | no |
 
 ## Outputs
 
@@ -204,7 +204,7 @@ Here is an example of how you can use this module in your inventory structure:
 
 
 ## Testing
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -213,7 +213,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-kms/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-kms)!
