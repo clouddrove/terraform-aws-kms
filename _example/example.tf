@@ -6,9 +6,9 @@ module "kms_key" {
   source = "./../"
 
   name        = "kms"
-  application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "application", "name"]
+  repository  = "https://registry.terraform.io/modules/clouddrove/kms/aws/0.13.0"
+  label_order = ["name", "environment"]
   enabled     = true
 
   description             = "KMS key for cloudtrail"
