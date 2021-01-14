@@ -7,7 +7,6 @@ module "kms_key" {
 
   name        = "kms"
   environment = "test"
-  repository  = "https://registry.terraform.io/modules/clouddrove/kms/aws/0.13.0"
   label_order = ["name", "environment"]
   enabled     = true
 
