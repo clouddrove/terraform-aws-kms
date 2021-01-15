@@ -8,8 +8,8 @@ module "kms_key" {
   name        = "kms"
   environment = "test"
   label_order = ["name", "environment"]
-  enabled     = true
 
+  enabled                 = true
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7
   enable_key_rotation     = true
@@ -92,4 +92,3 @@ data "aws_iam_policy_document" "default" {
     resources = ["*"]
   }
 }
-

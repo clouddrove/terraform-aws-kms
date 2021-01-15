@@ -1,5 +1,5 @@
 // Managed By : CloudDrove
-// Description : This Terratest is used to test the Terraform VPC module.
+// Description : This Terratest is used to test the Terraform KMS module.
 // Copyright @ CloudDrove. All Right Reserved.
 
 package test
@@ -31,5 +31,5 @@ func Test(t *testing.T) {
 
 	// Check that we get back the outputs that we expect
 	assert.Contains(t, keyArn, "arn:aws:kms")
-	assert.Equal(t, "test-clouddrove-kms", Tags["Name"])
+	assert.Equal(t, "kms-test", Tags["Name"])
 }
