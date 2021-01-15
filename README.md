@@ -14,7 +14,7 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.13-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.14-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -73,11 +73,10 @@ Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "kms_key" {
     source      = "clouddrove/kms/aws"
-    version     = "0.13.0"
+    version     = "0.14.0"
     name        = "kms"
-    application = "clouddrove"
     environment = "test"
-    label_order = ["environment", "application", "name"]
+    label_order = ["name", "environment"]
     enabled     = true
     description             = "KMS key for cloudtrail"
     deletion_window_in_days = 7
@@ -174,7 +173,6 @@ Here is an example of how you can use this module in your inventory structure:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | alias | The display name of the alias. The name must start with the word `alias` followed by a forward slash. | `string` | `""` | no |
-| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
 | attributes | Additional attributes (e.g. `1`). | `list(string)` | `[]` | no |
 | customer\_master\_key\_spec | Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports. Valid values: SYMMETRIC\_DEFAULT, RSA\_2048, RSA\_3072, RSA\_4096, ECC\_NIST\_P256, ECC\_NIST\_P384, ECC\_NIST\_P521, or ECC\_SECG\_P256K1. Defaults to SYMMETRIC\_DEFAULT. | `string` | `"SYMMETRIC_DEFAULT"` | no |
 | deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource. | `number` | `10` | no |
@@ -184,10 +182,11 @@ Here is an example of how you can use this module in your inventory structure:
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
 | is\_enabled | Specifies whether the key is enabled. | `bool` | `true` | no |
 | key\_usage | Specifies the intended use of the key. Defaults to ENCRYPT\_DECRYPT, and only symmetric encryption and decryption are supported. | `string` | `"ENCRYPT_DECRYPT"` | no |
-| label\_order | label order, e.g. `name`,`application`. | `list` | `[]` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| label\_order | label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
+| managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | policy | A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform. | `string` | `""` | no |
+| repository | Terraform current module repo | `string` | `"https://registry.terraform.io/modules/clouddrove/kms/aws"` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(string)` | `{}` | no |
 
 ## Outputs
