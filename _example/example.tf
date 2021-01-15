@@ -6,11 +6,10 @@ module "kms_key" {
   source = "./../"
 
   name        = "kms"
-  application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "application", "name"]
-  enabled     = true
+  label_order = ["name", "environment"]
 
+  enabled                 = true
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 7
   enable_key_rotation     = true
@@ -93,4 +92,3 @@ data "aws_iam_policy_document" "default" {
     resources = ["*"]
   }
 }
-
