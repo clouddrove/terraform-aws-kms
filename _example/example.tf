@@ -11,7 +11,7 @@ module "kms_key" {
 
   enabled                 = true
   description             = "KMS key for cloudtrail"
-  deletion_window_in_days = 7
+  deletion_window_in_days = 15
   alias                   = "alias/cloudtrail_Name"
   policy                  = data.aws_iam_policy_document.default.json
 }
