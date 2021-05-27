@@ -5,6 +5,7 @@ repos:
     hooks:
       - id: terraform-fmt
       - id: shellcheck
+      - id: tflint
 
   - repo: git://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0 # Use the ref you want to point at
@@ -15,6 +16,5 @@ repos:
       - id: check-byte-order-marker
       - id: check-executables-have-shebangs
       - id: check-merge-conflict
-      - id: debug-statements
       - id: check-yaml
       - id: check-added-large-files
