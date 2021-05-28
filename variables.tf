@@ -71,8 +71,8 @@ variable "enabled" {
 variable "key_usage" {
   type        = string
   default     = "ENCRYPT_DECRYPT"
-  description = "Specifies the intended use of the key. Defaults to ENCRYPT_DECRYPT, and only symmetric encryption and decryption are supported."
   sensitive   = true
+  description = "Specifies the intended use of the key. Defaults to ENCRYPT_DECRYPT, and only symmetric encryption and decryption are supported."
 }
 
 variable "alias" {
@@ -84,8 +84,8 @@ variable "alias" {
 variable "policy" {
   type        = string
   default     = ""
-  description = "A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform."
   sensitive   = true
+  description = "A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform."
 }
 
 variable "customer_master_key_spec" {
