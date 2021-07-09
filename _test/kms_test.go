@@ -26,10 +26,8 @@ func Test(t *testing.T) {
 	defer terraform.Destroy(t, terraformOptions)
 
 	// To get the value of an output variable, run 'terraform output'
-	keyArn := terraform.Output(t, terraformOptions, "key_arn")
 	Tags := terraform.OutputMap(t, terraformOptions, "tags")
 
 	// Check that we get back the outputs that we expect
-	assert.Contains(t, keyArn, "arn:aws:kms")
 	assert.Equal(t, "kms-test", Tags["Name"])
 }
