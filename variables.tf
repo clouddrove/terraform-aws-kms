@@ -68,6 +68,12 @@ variable "enabled" {
   description = "Specifies whether the kms is enabled or disabled."
 }
 
+variable "multi_region" {
+  type        = bool
+  default     = false
+  description = "Indicates whether the KMS key is a multi-Region (true) or regional (false) key."
+}
+
 variable "key_usage" {
   type        = string
   default     = "ENCRYPT_DECRYPT"

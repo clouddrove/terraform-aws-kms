@@ -13,6 +13,7 @@ module "kms_key" {
   description             = "KMS key for cloudtrail"
   deletion_window_in_days = 15
   alias                   = "alias/cloudtrail_Name"
+  multi_region            = true
   policy                  = data.aws_iam_policy_document.default.json
 }
 
