@@ -26,7 +26,6 @@ resource "aws_kms_key" "default" {
   is_enabled               = var.is_enabled
   enable_key_rotation      = var.enable_key_rotation
   customer_master_key_spec = var.customer_master_key_spec
-  multi_region             = var.multi_region
   policy                   = var.policy
   tags                     = module.labels.tags
 }

@@ -1,6 +1,8 @@
 provider "aws" {
   region = "eu-west-1"
 }
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
 
 module "kms_key" {
   source = "./../"
@@ -23,8 +25,14 @@ data "aws_iam_policy_document" "default" {
     sid    = "Enable IAM User Permissions"
     effect = "Allow"
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      type = "AWS"
+      identifiers = [
+        format(
+          "arn:%s:iam::%s:root",
+          join("", data.aws_partition.current.*.partition),
+          data.aws_caller_identity.current.account_id
+        )
+      ]
     }
     actions   = ["kms:*"]
     resources = ["*"]
@@ -60,8 +68,14 @@ data "aws_iam_policy_document" "default" {
     sid    = "Allow principals in the account to decrypt log files"
     effect = "Allow"
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      type = "AWS"
+      identifiers = [
+        format(
+          "arn:%s:iam::%s:root",
+          join("", data.aws_partition.current.*.partition),
+          data.aws_caller_identity.current.account_id
+        )
+      ]
     }
     actions = [
       "kms:Decrypt",
@@ -85,8 +99,14 @@ data "aws_iam_policy_document" "default" {
     sid    = "Allow alias creation during setup"
     effect = "Allow"
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      type = "AWS"
+      identifiers = [
+        format(
+          "arn:%s:iam::%s:root",
+          join("", data.aws_partition.current.*.partition),
+          data.aws_caller_identity.current.account_id
+        )
+      ]
     }
     actions   = ["kms:CreateAlias"]
     resources = ["*"]
