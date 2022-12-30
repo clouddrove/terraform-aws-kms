@@ -190,6 +190,7 @@ Here is an example of how you can use this module in your inventory structure:
 | key\_usage | Specifies the intended use of the key. Defaults to ENCRYPT\_DECRYPT, and only symmetric encryption and decryption are supported. | `string` | `"ENCRYPT_DECRYPT"` | no |
 | label\_order | label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
+| multi\_region | Indicates whether the KMS key is a multi-Region (true) or regional (false) key. | `bool` | `true` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | policy | A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform. | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-kms"` | no |
@@ -204,6 +205,7 @@ Here is an example of how you can use this module in your inventory structure:
 | key\_arn | Key ARN. |
 | key\_id | Key ID. |
 | tags | A mapping of tags to assign to the resource. |
+| target\_key\_id | Identifier for the key for which the alias is for, can be either an ARN or key\_id. |
 
 
 
