@@ -101,3 +101,9 @@ variable "enable_key_rotation" {
   default     = true
   description = "Specifies whether key rotation is enabled."
 }
+
+variable "multi_region" {
+  type        = bool
+  default     = true
+  description = "Indicates whether the KMS key is a multi-Region (true) or regional (false) key."
+}

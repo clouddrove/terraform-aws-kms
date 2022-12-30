@@ -8,7 +8,7 @@
 #              convention.
 module "labels" {
   source      = "clouddrove/labels/aws"
-  version     = "0.15.0"
+  version     = "1.3.0"
   name        = var.name
   repository  = var.repository
   environment = var.environment
@@ -27,6 +27,7 @@ resource "aws_kms_key" "default" {
   enable_key_rotation      = var.enable_key_rotation
   customer_master_key_spec = var.customer_master_key_spec
   policy                   = var.policy
+  multi_region             = var.multi_region
   tags                     = module.labels.tags
 }
 
