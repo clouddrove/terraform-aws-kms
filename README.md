@@ -79,7 +79,7 @@ Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "kms_key" {
     source      = "clouddrove/kms/aws"
-    version     = "0.15.0"
+    version     = "1.3.0"
     name        = "kms"
     environment = "test"
     label_order = ["name", "environment"]
