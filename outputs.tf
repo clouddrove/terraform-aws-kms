@@ -26,6 +26,6 @@ output "tags" {
 }
 
 output "target_key_id" {
-  value = join("", aws_kms_alias.default.*.target_key_id)
+  value       = join("", aws_kms_alias.default.*.target_key_id)
   description = "Identifier for the key for which the alias is for, can be either an ARN or key_id."
 }
