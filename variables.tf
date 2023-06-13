@@ -67,6 +67,11 @@ variable "enabled" {
   default     = true
   description = "Specifies whether the kms is enabled or disabled."
 }
+variable "kms_key_enabled" {
+  type        = bool
+  default     = true
+  description = "Specifies whether the kms is enabled or disabled."
+}
 
 
 variable "key_usage" {
@@ -141,4 +146,28 @@ variable "primary_external_key_arn" {
   type        = string
   default     = null
   description = "The primary external key arn of a multi-region replica external key"
+}
+
+variable "primary_key_arn" {
+  type        = string
+  default     = ""
+  description = "The primary key arn of a multi-region replica key"
+}
+
+variable "policy" {
+  type        = string
+  default     = null
+  description = "A valid policy JSON document. Although this is a key policy, not an IAM policy, an `aws_iam_policy_document`, in the form that designates a principal, can be used"
+}
+
+variable "computed_aliases" {
+  description = "A map of aliases to create. Values provided via the `name` key of the map can be computed from upstream resources"
+  type        = any
+  default     = {}
+}
+
+variable "aliases_use_name_prefix" {
+  description = "Determines whether the alias name is used as a prefix"
+  type        = bool
+  default     = false
 }
