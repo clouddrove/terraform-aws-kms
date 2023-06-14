@@ -54,40 +54,9 @@ resource "aws_kms_external_key" "external" {
   tags = module.labels.tags
 }
 
-resource "aws_kms_replica_key" "replica-key" {
-  count = var.enabled && var.create_replica_enabled ? 1 : 0
-
-  bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
-  deletion_window_in_days            = var.deletion_window_in_days
-  description                        = var.description
-  primary_key_arn                    = var.primary_key_arn == "" ? join("", aws_kms_key.default.*.arn) : var.primary_key_arn
-  enabled                            = var.is_enabled
-  policy                             = data.aws_iam_policy_document.default.json
-
-  tags = module.labels.tags
-}
-
-####----------------------------------------------------------------------------------
-## Replica External Key.
-####----------------------------------------------------------------------------------
-resource "aws_kms_replica_external_key" "replica-external-key" {
-  count = var.enabled && var.create_replica_external_enabled ? 1 : 0
-
-  bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
-  deletion_window_in_days            = var.deletion_window_in_days
-  description                        = var.description
-  enabled                            = var.is_enabled
-  key_material_base64                = var.key_material_base64
-  policy                             = data.aws_iam_policy_document.default.json
-  primary_key_arn                    = join("", aws_kms_key.default.*.arn)
-  valid_to                           = var.valid_to
-
-  tags = module.labels.tags
-}
-
-
-# Module      : KMS ALIAS
-# Description : Provides an alias for a KMS customer master key..
+##----------------------------------------------------------------------------------
+## Provides an alias for a KMS customer master key.
+##----------------------------------------------------------------------------------
 resource "aws_kms_alias" "default" {
   count = var.enabled ? 1 : 0
 

@@ -124,18 +124,6 @@ variable "key_material_base64" {
   description = "Base64 encoded 256-bit symmetric encryption key material to import. The CMK is permanently associated with this key material. External key only"
 }
 
-variable "create_replica_external_enabled" {
-  type        = bool
-  default     = false
-  description = "Determines whether a replica external CMK will be created (externally provided material)"
-}
-
-variable "create_replica_enabled" {
-  type        = bool
-  default     = false
-  description = "Determines whether a replica standard CMK will be created (AWS provided material)"
-}
-
 variable "create_external_enabled" {
   type        = bool
   default     = false
