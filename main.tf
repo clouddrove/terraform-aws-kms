@@ -1,7 +1,3 @@
-provider "aws" {
-  alias  = "primary"
-  region = "us-east-1"
-}
 ##----------------------------------------------------------------------------------
 ## Labels module callled that will be used for naming and tags.
 ##----------------------------------------------------------------------------------
@@ -14,7 +10,6 @@ module "labels" {
   managedby   = var.managedby
   label_order = var.label_order
 }
-
 
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
@@ -64,7 +59,9 @@ resource "aws_kms_alias" "default" {
   target_key_id = join("", aws_kms_key.default.*.id)
 }
 
-
+##----------------------------------------------------------------------------------
+## Data block called to get Permissions that will be used in creating policy.
+##----------------------------------------------------------------------------------
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
