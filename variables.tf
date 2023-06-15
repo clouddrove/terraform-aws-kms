@@ -96,7 +96,7 @@ variable "customer_master_key_spec" {
 
 variable "enable_key_rotation" {
   type        = string
-  default     = false
+  default     = true
   description = "Specifies whether key rotation is enabled."
 }
 
