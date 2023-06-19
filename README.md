@@ -83,90 +83,117 @@ Here is an example of how you can use this module in your inventory structure:
     name        = "kms"
     environment = "test"
     label_order = ["name", "environment"]
-    enabled     = true
-    description             = "KMS key for cloudtrail"
+  
     deletion_window_in_days = 7
-    enable_key_rotation     = true
-    alias                   = "alias/cloudtrail"
+    alias                   = "alias/cloudtrail_Name"
+    enabled                 = true
+    kms_key_enabled         = true
+    multi_region            = true
+    create_external_enabled = true
+    valid_to                = "2023-11-21T23:20:50Z"
+    key_material_base64     = "Wblj06fduthWggmsT0cLVoIMOkeLbc2kVfMud77i/JY="
     policy                  = data.aws_iam_policy_document.default.json
   }
-
-  data "aws_iam_policy_document" "default" {
+    
+    data "aws_caller_identity" "current" {}
+    data "aws_partition" "current" {}
+    
+    ##----------------------------------------------------------------------------------
+    ## Data block called to get Permissions that will be used in creating policy.
+    ##----------------------------------------------------------------------------------
+    data "aws_iam_policy_document" "default" {
     version = "2012-10-17"
     statement {
-      sid    = "Enable IAM User Permissions"
-      effect = "Allow"
-      principals {
-        type        = "AWS"
-        identifiers = ["*"]
-      }
-      actions   = ["kms:*"]
-      resources = ["*"]
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+    type = "AWS"
+    identifiers = [
+    format(
+    "arn:%s:iam::%s:root",
+    join("", data.aws_partition.current.*.partition),
+    data.aws_caller_identity.current.account_id
+    )
+    ]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
     }
     statement {
-      sid    = "Allow CloudTrail to encrypt logs"
-      effect = "Allow"
-      principals {
-        type        = "Service"
-        identifiers = ["cloudtrail.amazonaws.com"]
-      }
-      actions   = ["kms:GenerateDataKey*"]
-      resources = ["*"]
-      condition {
-        test     = "StringLike"
-        variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-        values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
-      }
+    sid    = "Allow CloudTrail to encrypt logs"
+    effect = "Allow"
+    principals {
+    type        = "Service"
+    identifiers = ["cloudtrail.amazonaws.com"]
     }
-
-    statement {
-      sid    = "Allow CloudTrail to describe key"
-      effect = "Allow"
-      principals {
-        type        = "Service"
-        identifiers = ["cloudtrail.amazonaws.com"]
-      }
-      actions   = ["kms:DescribeKey"]
-      resources = ["*"]
+    actions   = ["kms:GenerateDataKey*"]
+    resources = ["*"]
+    condition {
+    test     = "StringLike"
+    variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+    values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
     }
-
-    statement {
-      sid    = "Allow principals in the account to decrypt log files"
-      effect = "Allow"
-      principals {
-        type        = "AWS"
-        identifiers = ["*"]
-      }
-      actions = [
-        "kms:Decrypt",
-        "kms:ReEncryptFrom"
-      ]
-      resources = ["*"]
-      condition {
-        test     = "StringEquals"
-        variable = "kms:CallerAccount"
-        values = [
-        "XXXXXXXXXXXX"]
-      }
-      condition {
-        test     = "StringLike"
-        variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-        values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
-      }
     }
-
+  
     statement {
-      sid    = "Allow alias creation during setup"
-      effect = "Allow"
-      principals {
-        type        = "AWS"
-        identifiers = ["*"]
-      }
-      actions   = ["kms:CreateAlias"]
-      resources = ["*"]
+    sid    = "Allow CloudTrail to describe key"
+    effect = "Allow"
+    principals {
+    type        = "Service"
+    identifiers = ["cloudtrail.amazonaws.com"]
+    }
+    actions   = ["kms:DescribeKey"]
+    resources = ["*"]
+    }
+  
+    statement {
+    sid    = "Allow principals in the account to decrypt log files"
+    effect = "Allow"
+    principals {
+    type = "AWS"
+    identifiers = [
+    format(
+    "arn:%s:iam::%s:root",
+    join("", data.aws_partition.current.*.partition),
+    data.aws_caller_identity.current.account_id
+    )
+    ]
+    }
+    actions = [
+    "kms:Decrypt",
+    "kms:ReEncryptFrom"
+    ]
+    resources = ["*"]
+    condition {
+    test     = "StringEquals"
+    variable = "kms:CallerAccount"
+    values = [
+    "XXXXXXXXXXXX"]
+    }
+    condition {
+    test     = "StringLike"
+    variable = "kms:EncryptionContext:aws:cloudtrail:arn"
+    values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
+    }
+    }
+  
+    statement {
+    sid    = "Allow alias creation during setup"
+    effect = "Allow"
+    principals {
+    type = "AWS"
+    identifiers = [
+    format(
+    "arn:%s:iam::%s:root",
+    join("", data.aws_partition.current.*.partition),
+    data.aws_caller_identity.current.account_id
+    )
+    ]
+    }
+    actions   = ["kms:CreateAlias"]
+    resources = ["*"]
     }
   }
-
 ```
 
 
@@ -179,7 +206,11 @@ Here is an example of how you can use this module in your inventory structure:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | alias | The display name of the alias. The name must start with the word `alias` followed by a forward slash. | `string` | `""` | no |
+| aliases\_use\_name\_prefix | Determines whether the alias name is used as a prefix | `bool` | `false` | no |
 | attributes | Additional attributes (e.g. `1`). | `list(string)` | `[]` | no |
+| bypass\_policy\_lockout\_safety\_check | A flag to indicate whether to bypass the key policy lockout safety check. Setting this value to true increases the risk that the KMS key becomes unmanageable | `bool` | `null` | no |
+| computed\_aliases | A map of aliases to create. Values provided via the `name` key of the map can be computed from upstream resources | `any` | `{}` | no |
+| create\_external\_enabled | Determines whether an external CMK (externally provided material) will be created or a standard CMK (AWS provided material) | `bool` | `false` | no |
 | customer\_master\_key\_spec | Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports. Valid values: SYMMETRIC\_DEFAULT, RSA\_2048, RSA\_3072, RSA\_4096, ECC\_NIST\_P256, ECC\_NIST\_P384, ECC\_NIST\_P521, or ECC\_SECG\_P256K1. Defaults to SYMMETRIC\_DEFAULT. | `string` | `"SYMMETRIC_DEFAULT"` | no |
 | deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource. | `number` | `10` | no |
 | description | The description of the key as viewed in AWS console. | `string` | `"Parameter Store KMS master key"` | no |
@@ -187,14 +218,19 @@ Here is an example of how you can use this module in your inventory structure:
 | enabled | Specifies whether the kms is enabled or disabled. | `bool` | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
 | is\_enabled | Specifies whether the key is enabled. | `bool` | `true` | no |
+| key\_material\_base64 | Base64 encoded 256-bit symmetric encryption key material to import. The CMK is permanently associated with this key material. External key only | `string` | `null` | no |
 | key\_usage | Specifies the intended use of the key. Defaults to ENCRYPT\_DECRYPT, and only symmetric encryption and decryption are supported. | `string` | `"ENCRYPT_DECRYPT"` | no |
+| kms\_key\_enabled | Specifies whether the kms is enabled or disabled. | `bool` | `true` | no |
 | label\_order | label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | multi\_region | Indicates whether the KMS key is a multi-Region (true) or regional (false) key. | `bool` | `true` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
-| policy | A valid policy JSON document. For more information about building AWS IAM policy documents with Terraform. | `string` | `""` | no |
+| policy | A valid policy JSON document. Although this is a key policy, not an IAM policy, an `aws_iam_policy_document`, in the form that designates a principal, can be used | `string` | `null` | no |
+| primary\_external\_key\_arn | The primary external key arn of a multi-region replica external key | `string` | `null` | no |
+| primary\_key\_arn | The primary key arn of a multi-region replica key | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-kms"` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(string)` | `{}` | no |
+| valid\_to | Time at which the imported key material expires. When the key material expires, AWS KMS deletes the key material and the CMK becomes unusable. If not specified, key material does not expire | `string` | `""` | no |
 
 ## Outputs
 
