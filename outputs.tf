@@ -1,5 +1,3 @@
-# Module      : KMS KEY
-# Description : This terraform module creates a KMS Customer Master Key (CMK) and its alias.
 output "key_arn" {
   value       = join("", aws_kms_key.default.*.arn)
   description = "Key ARN."

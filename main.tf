@@ -1,11 +1,6 @@
-## Managed By : CloudDrove
-# Description : This Script is used to create KMS on AWS.
-## Copyright @ CloudDrove. All Right Reserved.
-
-#Module      : labels
-#Description : This terraform module is designed to generate consistent label names and tags
-#              for resources. You can use terraform-labels to implement a strict naming
-#              convention.
+##----------------------------------------------------------------------------------
+## Labels module callled that will be used for naming and tags.
+##----------------------------------------------------------------------------------
 module "labels" {
   source      = "clouddrove/labels/aws"
   version     = "1.3.0"
@@ -16,10 +11,12 @@ module "labels" {
   label_order = var.label_order
 }
 
-# Module      : KMS KEY
-# Description : This terraform module creates a KMS Customer Master Key (CMK) and its alias.
+####----------------------------------------------------------------------------------
+## This terraform resource creates a KMS Customer Master Key (CMK) and its alias.
+####----------------------------------------------------------------------------------
 resource "aws_kms_key" "default" {
-  count                    = var.enabled ? 1 : 0
+  count = var.enabled && var.kms_key_enabled ? 1 : 0
+
   description              = var.description
   key_usage                = var.key_usage
   deletion_window_in_days  = var.deletion_window_in_days
@@ -31,10 +28,30 @@ resource "aws_kms_key" "default" {
   tags                     = module.labels.tags
 }
 
-# Module      : KMS ALIAS
-# Description : Provides an alias for a KMS customer master key..
+####----------------------------------------------------------------------------------
+## Create KMS keys in an external key store backed by your cryptographic keys outside of AWS.
+####----------------------------------------------------------------------------------
+resource "aws_kms_external_key" "external" {
+  count = var.enabled && var.create_external_enabled ? 1 : 0
+
+  bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
+  deletion_window_in_days            = var.deletion_window_in_days
+  description                        = var.description
+  enabled                            = var.is_enabled
+  key_material_base64                = var.key_material_base64
+  multi_region                       = var.multi_region
+  policy                             = var.policy
+  valid_to                           = var.valid_to
+
+  tags = module.labels.tags
+}
+
+##----------------------------------------------------------------------------------
+## Provides an alias for a KMS customer master key.
+##----------------------------------------------------------------------------------
 resource "aws_kms_alias" "default" {
-  count         = var.enabled ? 1 : 0
+  count = var.enabled ? 1 : 0
+
   name          = coalesce(var.alias, format("alias/%v", module.labels.id))
   target_key_id = join("", aws_kms_key.default.*.id)
 }
