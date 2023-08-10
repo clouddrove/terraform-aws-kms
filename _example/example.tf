@@ -20,7 +20,6 @@ module "kms_key" {
 
   deletion_window_in_days = 7
   alias                   = "alias/cloudtrail_Name"
-  enabled                 = true
   kms_key_enabled         = true
   multi_region            = true
   create_external_enabled = true
