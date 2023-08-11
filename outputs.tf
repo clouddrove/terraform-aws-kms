@@ -1,10 +1,10 @@
 output "key_arn" {
-  value       = join("", aws_kms_key.default.*.arn)
+  value       = try(aws_kms_key.default[0].arn, aws_kms_external_key.external[0].arn, aws_kms_replica_key.replica[0].arn, aws_kms_replica_external_key.replica_external[0].arn)
   description = "Key ARN."
 }
 
 output "key_id" {
-  value       = join("", aws_kms_key.default.*.key_id)
+  value       = try(aws_kms_key.default[0].key_id, aws_kms_external_key.external[0].id, aws_kms_replica_key.replica[0].key_id, aws_kms_replica_external_key.replica_external[0].key_id)
   description = "Key ID."
 }
 

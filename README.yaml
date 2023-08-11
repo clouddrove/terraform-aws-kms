@@ -15,19 +15,19 @@ github_repo: clouddrove/terraform-aws-kms
 
 # Badges to display
 badges:
-  - name: "Terraform"
-    image: "https://img.shields.io/badge/Terraform-v1.1.7-green"
-    url: "https://www.terraform.io"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/clouddrove/terraform-aws-subnet.svg"
+    url: "https://github.com/clouddrove/terraform-aws-subnet/releases/latest"
+  - name: "tfsec"
+    image: "https://github.com/clouddrove/terraform-aws-subnet/actions/workflows/tfsec.yml/badge.svg"
+    url: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml"
   - name: "Licence"
     image: "https://img.shields.io/badge/License-APACHE-blue.svg"
     url: "LICENSE.md"
-  - name: "tfsec"
-    image: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml"
-  - name: "static-checks"
-    image: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/terraform.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/terraform.yml"
 
+prerequesties:
+  - name: Terraform 1.5.4
+    url: https://learn.hashicorp.com/terraform/getting-started/install.html
 #  description of this project
 description: |-
   This terraform module creates a KMS Customer Master Key (CMK) and its alias.

@@ -20,7 +20,7 @@ variable "environment" {
 
 variable "label_order" {
   type        = list(any)
-  default     = []
+  default     = ["name", "environment"]
   description = "label order, e.g. `name`,`application`."
 }
 
@@ -28,12 +28,6 @@ variable "attributes" {
   type        = list(string)
   default     = []
   description = "Additional attributes (e.g. `1`)."
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 }
 
 variable "managedby" {
@@ -108,7 +102,7 @@ variable "multi_region" {
 
 variable "bypass_policy_lockout_safety_check" {
   type        = bool
-  default     = null
+  default     = false
   description = "A flag to indicate whether to bypass the key policy lockout safety check. Setting this value to true increases the risk that the KMS key becomes unmanageable"
 }
 
@@ -148,14 +142,14 @@ variable "policy" {
   description = "A valid policy JSON document. Although this is a key policy, not an IAM policy, an `aws_iam_policy_document`, in the form that designates a principal, can be used"
 }
 
-variable "computed_aliases" {
-  description = "A map of aliases to create. Values provided via the `name` key of the map can be computed from upstream resources"
-  type        = any
-  default     = {}
-}
-
-variable "aliases_use_name_prefix" {
-  description = "Determines whether the alias name is used as a prefix"
+variable "create_replica_enabled" {
   type        = bool
   default     = false
+  description = "Determines whether a replica standard CMK will be created (AWS provided material)"
+}
+
+variable "create_replica_external_enabled" {
+  type        = bool
+  default     = false
+  description = "Determines whether a replica external CMK will be created (externally provided material)"
 }
