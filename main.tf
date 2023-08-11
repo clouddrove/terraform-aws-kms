@@ -16,8 +16,7 @@ module "labels" {
 ## This terraform resource creates a KMS Customer Master Key (CMK) and its alias.
 ####----------------------------------------------------------------------------------
 resource "aws_kms_key" "default" {
-  count = var.enabled && var.kms_key_enabled ? 1 : 0
-
+  count                              = var.enabled && var.kms_key_enabled ? 1 : 0
   description                        = var.description
   key_usage                          = var.key_usage
   deletion_window_in_days            = var.deletion_window_in_days
@@ -34,8 +33,7 @@ resource "aws_kms_key" "default" {
 ## Create KMS keys in an external key store backed by your cryptographic keys outside of AWS.
 ####----------------------------------------------------------------------------------
 resource "aws_kms_external_key" "external" {
-  count = var.enabled && var.create_external_enabled ? 1 : 0
-
+  count                              = var.enabled && var.create_external_enabled ? 1 : 0
   bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
   deletion_window_in_days            = var.deletion_window_in_days
   description                        = var.description
@@ -44,8 +42,7 @@ resource "aws_kms_external_key" "external" {
   multi_region                       = var.multi_region
   policy                             = var.policy
   valid_to                           = var.valid_to
-
-  tags = module.labels.tags
+  tags                               = module.labels.tags
 }
 
 ####----------------------------------------------------------------------------------
@@ -53,8 +50,7 @@ resource "aws_kms_external_key" "external" {
 ####----------------------------------------------------------------------------------
 
 resource "aws_kms_replica_key" "replica" {
-  count = var.enabled && var.create_replica_enabled ? 1 : 0
-
+  count                              = var.enabled && var.create_replica_enabled ? 1 : 0
   bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
   deletion_window_in_days            = var.deletion_window_in_days
   description                        = var.description
@@ -70,8 +66,7 @@ resource "aws_kms_replica_key" "replica" {
 ####----------------------------------------------------------------------------------
 
 resource "aws_kms_replica_external_key" "replica_external" {
-  count = var.enabled && var.create_replica_external_enabled ? 1 : 0
-
+  count                              = var.enabled && var.create_replica_external_enabled ? 1 : 0
   bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
   deletion_window_in_days            = var.deletion_window_in_days
   description                        = var.description
@@ -88,8 +83,7 @@ resource "aws_kms_replica_external_key" "replica_external" {
 ## Provides an alias for a KMS customer master key.
 ##----------------------------------------------------------------------------------
 resource "aws_kms_alias" "default" {
-  count = var.enabled ? 1 : 0
-
+  count         = var.enabled ? 1 : 0
   name          = coalesce(var.alias, format("alias/%v", module.labels.id))
   target_key_id = try(aws_kms_key.default[0].key_id, aws_kms_external_key.external[0].id, aws_kms_replica_key.replica[0].key_id, aws_kms_replica_external_key.replica_external[0].key_id)
 }

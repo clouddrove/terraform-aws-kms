@@ -11,16 +11,13 @@ provider "aws" {
 ## AWS Key Management Service (AWS KMS) is a managed service that makes it easy for you to create and control the cryptographic keys that are used to protect your data.
 ####----------------------------------------------------------------------------------
 module "kms_key" {
-
-  source = "./../"
-
-  name        = "kms"
-  environment = "test"
-  label_order = ["name", "environment"]
-
+  source                  = "./../../"
+  name                    = "kms"
+  environment             = "test"
   deletion_window_in_days = 7
-  alias                   = "alias/cloudtrail_Name"
-  kms_key_enabled         = true
+  alias                   = "alias/external_key"
+  kms_key_enabled         = false
+  enabled                 = true
   multi_region            = true
   create_external_enabled = true
   valid_to                = "2023-11-21T23:20:50Z"
