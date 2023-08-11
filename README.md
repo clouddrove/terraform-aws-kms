@@ -13,17 +13,14 @@
 
 <p align="center">
 
-<a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v1.1.7-green" alt="Terraform">
+<a href="https://github.com/clouddrove/terraform-aws-subnet/releases/latest">
+  <img src="https://img.shields.io/github/release/clouddrove/terraform-aws-subnet.svg" alt="Latest Release">
+</a>
+<a href="https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml">
+  <img src="https://github.com/clouddrove/terraform-aws-subnet/actions/workflows/tfsec.yml/badge.svg" alt="tfsec">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
-</a>
-<a href="https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml">
-  <img src="https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml/badge.svg" alt="tfsec">
-</a>
-<a href="https://github.com/clouddrove/terraform-aws-kms/actions/workflows/terraform.yml">
-  <img src="https://github.com/clouddrove/terraform-aws-kms/actions/workflows/terraform.yml/badge.svg" alt="static-checks">
 </a>
 
 
@@ -56,11 +53,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 ## Prerequisites
 
 This module has a few dependencies: 
-
-- [Terraform 1.x.x](https://learn.hashicorp.com/terraform/getting-started/install.html)
-- [Go](https://golang.org/doc/install)
-- [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
-- [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
+- [Terraform 1.5.4](https://learn.hashicorp.com/terraform/getting-started/install.html)
 
 
 
@@ -206,11 +199,11 @@ Here is an example of how you can use this module in your inventory structure:
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | alias | The display name of the alias. The name must start with the word `alias` followed by a forward slash. | `string` | `""` | no |
-| aliases\_use\_name\_prefix | Determines whether the alias name is used as a prefix | `bool` | `false` | no |
 | attributes | Additional attributes (e.g. `1`). | `list(string)` | `[]` | no |
-| bypass\_policy\_lockout\_safety\_check | A flag to indicate whether to bypass the key policy lockout safety check. Setting this value to true increases the risk that the KMS key becomes unmanageable | `bool` | `null` | no |
-| computed\_aliases | A map of aliases to create. Values provided via the `name` key of the map can be computed from upstream resources | `any` | `{}` | no |
+| bypass\_policy\_lockout\_safety\_check | A flag to indicate whether to bypass the key policy lockout safety check. Setting this value to true increases the risk that the KMS key becomes unmanageable | `bool` | `false` | no |
 | create\_external\_enabled | Determines whether an external CMK (externally provided material) will be created or a standard CMK (AWS provided material) | `bool` | `false` | no |
+| create\_replica\_enabled | Determines whether a replica standard CMK will be created (AWS provided material) | `bool` | `false` | no |
+| create\_replica\_external\_enabled | Determines whether a replica external CMK will be created (externally provided material) | `bool` | `false` | no |
 | customer\_master\_key\_spec | Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports. Valid values: SYMMETRIC\_DEFAULT, RSA\_2048, RSA\_3072, RSA\_4096, ECC\_NIST\_P256, ECC\_NIST\_P384, ECC\_NIST\_P521, or ECC\_SECG\_P256K1. Defaults to SYMMETRIC\_DEFAULT. | `string` | `"SYMMETRIC_DEFAULT"` | no |
 | deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource. | `number` | `10` | no |
 | description | The description of the key as viewed in AWS console. | `string` | `"Parameter Store KMS master key"` | no |
@@ -221,7 +214,7 @@ Here is an example of how you can use this module in your inventory structure:
 | key\_material\_base64 | Base64 encoded 256-bit symmetric encryption key material to import. The CMK is permanently associated with this key material. External key only | `string` | `null` | no |
 | key\_usage | Specifies the intended use of the key. Defaults to ENCRYPT\_DECRYPT, and only symmetric encryption and decryption are supported. | `string` | `"ENCRYPT_DECRYPT"` | no |
 | kms\_key\_enabled | Specifies whether the kms is enabled or disabled. | `bool` | `true` | no |
-| label\_order | label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
+| label\_order | label order, e.g. `name`,`application`. | `list(any)` | <pre>[<br>  "name",<br>  "environment"<br>]</pre> | no |
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | multi\_region | Indicates whether the KMS key is a multi-Region (true) or regional (false) key. | `bool` | `true` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
@@ -229,7 +222,6 @@ Here is an example of how you can use this module in your inventory structure:
 | primary\_external\_key\_arn | The primary external key arn of a multi-region replica external key | `string` | `null` | no |
 | primary\_key\_arn | The primary key arn of a multi-region replica key | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-kms"` | no |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(string)` | `{}` | no |
 | valid\_to | Time at which the imported key material expires. When the key material expires, AWS KMS deletes the key material and the CMK becomes unusable. If not specified, key material does not expire | `string` | `""` | no |
 
 ## Outputs
