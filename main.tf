@@ -57,8 +57,7 @@ resource "aws_kms_replica_key" "replica" {
   primary_key_arn                    = var.primary_key_arn
   enabled                            = var.is_enabled
   policy                             = var.policy
-
-  tags = module.labels.tags
+  tags                               = module.labels.tags
 }
 
 ####----------------------------------------------------------------------------------

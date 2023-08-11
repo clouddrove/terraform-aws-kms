@@ -102,7 +102,7 @@ variable "multi_region" {
 
 variable "bypass_policy_lockout_safety_check" {
   type        = bool
-  default     = null
+  default     = false
   description = "A flag to indicate whether to bypass the key policy lockout safety check. Setting this value to true increases the risk that the KMS key becomes unmanageable"
 }
 
