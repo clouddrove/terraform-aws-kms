@@ -14,12 +14,13 @@ license: "APACHE"
 github_repo: clouddrove/terraform-aws-kms
 
 # Badges to display
+# Badges to display
 badges:
   - name: "Latest Release"
-    image: "https://img.shields.io/github/release/clouddrove/terraform-aws-subnet.svg"
-    url: "https://github.com/clouddrove/terraform-aws-subnet/releases/latest"
+    image: "https://img.shields.io/github/release/clouddrove/terraform-aws-kms.svg"
+    url: "https://github.com/clouddrove/terraform-aws-kms/releases/latest"
   - name: "tfsec"
-    image: "https://github.com/clouddrove/terraform-aws-subnet/actions/workflows/tfsec.yml/badge.svg"
+    image: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml/badge.svg"
     url: "https://github.com/clouddrove/terraform-aws-kms/actions/workflows/tfsec.yml"
   - name: "Licence"
     image: "https://img.shields.io/badge/License-APACHE-blue.svg"
