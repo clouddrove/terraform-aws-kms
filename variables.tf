@@ -50,12 +50,6 @@ variable "description" {
   description = "The description of the key as viewed in AWS console."
 }
 
-variable "is_enabled" {
-  type        = bool
-  default     = true
-  description = "Specifies whether the key is enabled."
-}
-
 variable "enabled" {
   type        = bool
   default     = true

@@ -5,6 +5,7 @@ module "labels" {
   source      = "clouddrove/labels/aws"
   version     = "1.3.0"
   name        = var.name
+  enabled     = var.enabled
   repository  = var.repository
   environment = var.environment
   managedby   = var.managedby
@@ -20,7 +21,7 @@ resource "aws_kms_key" "default" {
   description                        = var.description
   key_usage                          = var.key_usage
   deletion_window_in_days            = var.deletion_window_in_days
-  is_enabled                         = var.is_enabled
+  is_enabled                         = var.kms_key_enabled
   enable_key_rotation                = var.enable_key_rotation
   customer_master_key_spec           = var.customer_master_key_spec
   policy                             = var.policy
@@ -37,7 +38,7 @@ resource "aws_kms_external_key" "external" {
   bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
   deletion_window_in_days            = var.deletion_window_in_days
   description                        = var.description
-  enabled                            = var.is_enabled
+  enabled                            = var.create_external_enabled
   key_material_base64                = var.key_material_base64
   multi_region                       = var.multi_region
   policy                             = var.policy
@@ -55,7 +56,7 @@ resource "aws_kms_replica_key" "replica" {
   deletion_window_in_days            = var.deletion_window_in_days
   description                        = var.description
   primary_key_arn                    = var.primary_key_arn
-  enabled                            = var.is_enabled
+  enabled                            = var.create_replica_enabled
   policy                             = var.policy
   tags                               = module.labels.tags
 }
@@ -69,7 +70,7 @@ resource "aws_kms_replica_external_key" "replica_external" {
   bypass_policy_lockout_safety_check = var.bypass_policy_lockout_safety_check
   deletion_window_in_days            = var.deletion_window_in_days
   description                        = var.description
-  enabled                            = var.is_enabled
+  enabled                            = var.create_replica_external_enabled
   key_material_base64                = var.key_material_base64
   policy                             = var.policy
   primary_key_arn                    = var.primary_external_key_arn
@@ -84,5 +85,5 @@ resource "aws_kms_replica_external_key" "replica_external" {
 resource "aws_kms_alias" "default" {
   count         = var.enabled ? 1 : 0
   name          = coalesce(var.alias, format("alias/%v", module.labels.id))
-  target_key_id = try(aws_kms_key.default[0].key_id, aws_kms_external_key.external[0].id, aws_kms_replica_key.replica[0].key_id, aws_kms_replica_external_key.replica_external[0].key_id)
+  target_key_id = try(aws_kms_key.default[0].key_id, aws_kms_external_key.external[0].id, aws_kms_replica_key.replica[0].key_id, aws_kms_replica_external_key.replica_external[0].key_id, null)
 }
