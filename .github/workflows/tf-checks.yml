@@ -6,18 +6,18 @@ on:
   workflow_dispatch:
 jobs:
   complete:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.7
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/complete/'
   external_key:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.7
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/external_key/'
   external_replica_key:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.7
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/external_replica_key/'
   replica_key:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.7
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/replica_key/'
