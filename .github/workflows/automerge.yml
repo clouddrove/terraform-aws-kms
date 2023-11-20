@@ -10,15 +10,8 @@ on:
       - ready_for_review
       - reopened
       - unlocked
-  pull_request_review:
-    types:
-      - submitted
-  check_suite:
-    types:
-      - completed
-  status: {}
   check_run:
-      types: [ rerequested, completed ]
+      types: [ completed ]
 jobs:
   automerge:
     runs-on: ubuntu-latest
@@ -32,4 +25,4 @@ jobs:
           MERGE_METHOD: "merge"
           MERGE_DELETE_BRANCH: "true"
           MERGE_LABELS: "dependencies,automerge"
-          MERGE_REQUIRED_APPROVALS: "1"
+          MERGE_REQUIRED_APPROVALS: "2"
