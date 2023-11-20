@@ -12,6 +12,6 @@ jobs:
       - name: Auto approve
         uses: hmarr/auto-approve-action@v3.2.1
         # Perform the auto approve action only when the PR is raised by dependabot
-        if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
+        if: github.actor == 'dependabot[bot]'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
