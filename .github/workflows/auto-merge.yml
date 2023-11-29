@@ -9,6 +9,7 @@ permissions:
   pull-requests: write
 jobs:
   dependabot:
+    if: github.actor == 'dependabot[bot]'
     uses: clouddrove/github-shared-workflows/.github/workflows/auto-merge.yml@feat/auto-merge
     secrets:
       GITHUB: ${{secrets.GITHUB_TOKEN}}
