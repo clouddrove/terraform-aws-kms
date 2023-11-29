@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 jobs:
   dependabot:
-    uses: clouddrove/github-shared-workflows/.github/workflows/auto_assignee.yml@feat/auto-merge
+    uses: clouddrove/github-shared-workflows/.github/workflows/auto-merge.yml@feat/auto-merge
     secrets:
       GITHUB: ${{secrets.GITHUB_TOKEN}}
     with:
