@@ -17,7 +17,7 @@ updates:
   - package-ecosystem: "terraform" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     # Add assignees
     assignees:
       - "clouddrove-ci"
@@ -30,7 +30,7 @@ updates:
   - package-ecosystem: "terraform" # See documentation for possible values
     directory: "/_example/complete" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     # Add assignees
     assignees:
       - "clouddrove-ci"
@@ -43,7 +43,7 @@ updates:
   - package-ecosystem: "terraform" # See documentation for possible values
     directory: "/_example/external_key" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     # Add assignees
     assignees:
       - "clouddrove-ci"
@@ -56,7 +56,7 @@ updates:
   - package-ecosystem: "terraform" # See documentation for possible values
     directory: "/_example/external_replica_key" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     # Add assignees
     assignees:
       - "clouddrove-ci"
@@ -69,7 +69,7 @@ updates:
   - package-ecosystem: "terraform" # See documentation for possible values
     directory: "/_example/replica_key" # Location of package manifests
     schedule:
-      interval: "weekly"
+      interval: "daily"
     # Add assignees
     assignees:
       - "clouddrove-ci"
