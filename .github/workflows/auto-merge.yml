@@ -1,0 +1,16 @@
+name: Dependabot auto-approve
+on: 
+  pull_request:
+  check_run:
+      types: 
+      - completed
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  dependabot:
+    uses: clouddrove/github-shared-workflows/.github/workflows/auto_assignee.yml@feat/auto-merge
+    secrets:
+      GITHUB: ${{secrets.GITHUB_TOKEN}}
+    with:
+      PR_URL: ${{github.event.pull_request.html_url}}
