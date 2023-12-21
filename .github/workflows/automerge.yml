@@ -1,28 +1,13 @@
-name: automerge
+---
+name: Auto merge
 on:
   pull_request:
-    types:
-      - labeled
-      - unlabeled
-      - synchronize
-      - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
-  check_run:
-      types: [ completed ]
 jobs:
-  automerge:
-    runs-on: ubuntu-latest
-    steps:
-      - id: automerge
-        name: automerge
-        uses: pascalgn/automerge-action@v0.15.6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MERGE_FILTER_AUTHOR: 'dependabot[bot]'
-          MERGE_METHOD: "merge"
-          MERGE_DELETE_BRANCH: "true"
-          MERGE_LABELS: "dependencies,automerge"
-          MERGE_REQUIRED_APPROVALS: "2"
+  auto-merge:
+    uses: clouddrove/github-shared-workflows/.github/workflows/automerge.yml@auto_merge.yml@1.0.9
+    secrets:
+      GITHUB: ${{ secrets.GITHUB }}
+      CI_GITHUB_TOKEN: ${{ secrets.CI_GITHUB_TOKEN }}
+    with:
+      tfcheck: 'replica_key / Get min/max versions'
+...
