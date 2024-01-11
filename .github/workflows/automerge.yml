@@ -4,9 +4,9 @@ on:
   pull_request:
 jobs:
   auto-merge:
-    uses: clouddrove/github-shared-workflows/.github/workflows/auto_merge.yml@1.0.9
+    uses: clouddrove/github-shared-workflows/.github/workflows/auto_merge.yml@1.0.10
     secrets:
       GITHUB: ${{ secrets.GITHUB }}
     with:
-      tfcheck: 'replica_key / Get min/max versions'
+      tfcheck: 'replica_key / Check code format'
 ...
