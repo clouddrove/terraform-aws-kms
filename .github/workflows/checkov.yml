@@ -14,5 +14,4 @@ jobs:
     uses: clouddrove/github-shared-workflows/.github/workflows/checkov.yml@master
     with:
       directory: ./
-      framework: terrafform
       continue_on_error: true
