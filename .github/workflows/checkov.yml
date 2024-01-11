@@ -1,0 +1,11 @@
+---
+name: checkov
+on:
+  pull_request:
+jobs:
+  checkov:
+    uses: clouddrove/github-shared-workflows/.github/workflows/checkov.yml@1.0.10
+    with:
+      directory: '.'
+      continue_on_error: true
+...
