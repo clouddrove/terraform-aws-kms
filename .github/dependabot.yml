@@ -28,7 +28,7 @@ updates:
     open-pull-requests-limit: 3
 
   - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "/_example/complete" # Location of package manifests
+    directory: "/examples/complete" # Location of package manifests
     schedule:
       interval: "weekly"
     # Add assignees
@@ -41,7 +41,7 @@ updates:
     open-pull-requests-limit: 3
 
   - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "/_example/external_key" # Location of package manifests
+    directory: "/examples/external_key" # Location of package manifests
     schedule:
       interval: "weekly"
     # Add assignees
@@ -54,7 +54,7 @@ updates:
     open-pull-requests-limit: 3
 
   - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "/_example/external_replica_key" # Location of package manifests
+    directory: "/examples/external_replica_key" # Location of package manifests
     schedule:
       interval: "weekly"
     # Add assignees
@@ -67,7 +67,7 @@ updates:
     open-pull-requests-limit: 3
 
   - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "/_example/replica_key" # Location of package manifests
+    directory: "/examples/replica_key" # Location of package manifests
     schedule:
       interval: "weekly"
     # Add assignees
