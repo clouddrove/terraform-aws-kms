@@ -58,7 +58,7 @@ usage : |-
       name        = "kms"
       environment = "test"
       label_order = ["name", "environment"]
-    
+
       deletion_window_in_days = 7
       alias                   = "alias/cloudtrail_Name"
       enabled                 = true
@@ -69,10 +69,10 @@ usage : |-
       key_material_base64     = "Wblj06fduthWggmsT0cLVoIMOkeLbc2kVfMud77i/JY="
       policy                  = data.aws_iam_policy_document.default.json
     }
-      
+
       data "aws_caller_identity" "current" {}
       data "aws_partition" "current" {}
-      
+
       ##----------------------------------------------------------------------------------
       ## Data block called to get Permissions that will be used in creating policy.
       ##----------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ usage : |-
       values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
       }
       }
-    
+
       statement {
       sid    = "Allow CloudTrail to describe key"
       effect = "Allow"
@@ -120,7 +120,7 @@ usage : |-
       actions   = ["kms:DescribeKey"]
       resources = ["*"]
       }
-    
+
       statement {
       sid    = "Allow principals in the account to decrypt log files"
       effect = "Allow"
@@ -151,7 +151,7 @@ usage : |-
       values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
       }
       }
-    
+
       statement {
       sid    = "Allow alias creation during setup"
       effect = "Allow"
