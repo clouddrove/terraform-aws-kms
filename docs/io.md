@@ -37,4 +37,3 @@
 | key\_id | Key ID. |
 | tags | A mapping of tags to assign to the resource. |
 | target\_key\_id | Identifier for the key for which the alias is for, can be either an ARN or key\_id. |
-
