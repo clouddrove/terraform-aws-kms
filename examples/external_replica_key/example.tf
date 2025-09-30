@@ -2,7 +2,7 @@
 ## Provider block added, Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS.
 ####----------------------------------------------------------------------------------
 provider "aws" {
-  region = "us-east-1"
+  region = "us-east-2"
 }
 
 ####----------------------------------------------------------------------------------
@@ -17,10 +17,11 @@ module "kms_key" {
   alias                           = "alias/replicate_key"
   kms_key_enabled                 = false
   create_replica_external_enabled = true
-  enabled                         = true
+  enabled                         = false
   multi_region                    = false
-  key_material_base64             = "Wblj06fduthWggmsT0cLVoIMOkeLbc2kVfMud77i/JY="
-  primary_key_arn                 = "arn:aws:kms:xxxxxxxxxxxxxxxxxxxxx"
+  key_material_base64             = "n3d9XOrZBKgIzrPkaYhI9ulw3eNyV/61tUPSlGCO/RI="
+  primary_external_key_arn        = "arn:aws:kms:xxxxxxxxxxxxxxxx"
+  valid_to                        = "2025-11-21T23:20:50Z"
   policy                          = data.aws_iam_policy_document.default.json
 }
 
@@ -33,7 +34,7 @@ data "aws_partition" "current" {}
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
-    sid    = "Enable IAM User Permissions"
+    sid    = "AllowAllInAccountFullAccess"
     effect = "Allow"
     principals {
       type = "AWS"
@@ -60,7 +61,7 @@ data "aws_iam_policy_document" "default" {
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
+      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
     }
   }
 
@@ -96,13 +97,12 @@ data "aws_iam_policy_document" "default" {
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
-      values = [
-      "XXXXXXXXXXXX"]
+      values   = [data.aws_caller_identity.current.account_id]
     }
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
+      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
     }
   }
 

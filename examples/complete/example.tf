@@ -19,7 +19,7 @@ module "kms_key" {
   alias                   = "alias/cloudtrail_Name"
   kms_key_enabled         = false
   multi_region            = true
-  valid_to                = "2023-11-21T23:20:50Z"
+  valid_to                = "2025-11-21T23:20:50Z"
   policy                  = data.aws_iam_policy_document.default.json
 }
 
@@ -32,7 +32,7 @@ data "aws_partition" "current" {}
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
-    sid    = "Enable IAM User Permissions"
+    sid    = "AllowAllInAccountFullAccess"
     effect = "Allow"
     principals {
       type = "AWS"
@@ -59,7 +59,8 @@ data "aws_iam_policy_document" "default" {
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
+      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
+
     }
   }
 
@@ -95,13 +96,13 @@ data "aws_iam_policy_document" "default" {
     condition {
       test     = "StringEquals"
       variable = "kms:CallerAccount"
-      values = [
-      "XXXXXXXXXXXX"]
+      values   = [data.aws_caller_identity.current.account_id]
     }
     condition {
       test     = "StringLike"
       variable = "kms:EncryptionContext:aws:cloudtrail:arn"
-      values   = ["arn:aws:cloudtrail:*:XXXXXXXXXXXX:trail/*"]
+      values   = ["arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"]
+
     }
   }
 
