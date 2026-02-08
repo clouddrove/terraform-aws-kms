@@ -147,3 +147,4 @@ variable "create_replica_external_enabled" {
   default     = false
   description = "Determines whether a replica external CMK will be created (externally provided material)"
 }
+
