@@ -11,6 +11,7 @@ jobs:
       working_directory: './examples/complete/'
       provider: aws
       enable_plan: true
+      show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
   external_key:
@@ -20,6 +21,7 @@ jobs:
       working_directory: './examples/external_key/'
       provider: aws
       enable_plan: true
+      show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
   external_replica_key:
@@ -29,6 +31,7 @@ jobs:
       working_directory: './examples/external_replica_key/'
       provider: aws
       enable_plan: true
+      show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
   replica_key:
@@ -38,5 +41,6 @@ jobs:
       working_directory: './examples/replica_key/'
       provider: aws
       enable_plan: true
+      show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
