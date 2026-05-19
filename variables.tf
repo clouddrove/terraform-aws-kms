@@ -36,6 +36,12 @@ variable "managedby" {
   description = "ManagedBy, eg 'CloudDrove'."
 }
 
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags to apply to all resources managed by the module (merged with module.labels.tags via extra_tags)."
+}
+
 # Module      : KMS KEY
 # Description : Provides a KMS customer master key.
 variable "deletion_window_in_days" {
