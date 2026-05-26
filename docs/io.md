@@ -25,6 +25,7 @@
 | primary\_external\_key\_arn | The primary external key arn of a multi-region replica external key | `string` | `null` | no |
 | primary\_key\_arn | The primary key arn of a multi-region replica key | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-kms"` | no |
+| tags | Additional tags to apply to all resources managed by the module (merged with module.labels.tags via extra\_tags). | `map(string)` | `{}` | no |
 | valid\_to | Time at which the imported key material expires. When the key material expires, AWS KMS deletes the key material and the CMK becomes unusable. If not specified, key material does not expire | `string` | `""` | no |
 
 ## Outputs

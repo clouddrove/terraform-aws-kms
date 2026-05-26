@@ -11,6 +11,7 @@ module "labels" {
   managedby   = var.managedby
   label_order = var.label_order
   attributes  = var.attributes
+  extra_tags  = var.tags
 }
 
 ####----------------------------------------------------------------------------------
