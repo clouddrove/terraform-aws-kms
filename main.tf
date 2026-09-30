@@ -32,65 +32,6 @@ locals {
   primary_alias_name            = coalesce(var.alias, format("alias/%v", module.labels.id))
 }
 
-check "key_variant" {
-  assert {
-    condition     = length(local.selected_key_variants) == 1
-    error_message = "Select exactly one KMS key variant: standard, external, replica, or replica_external."
-  }
-}
-
-check "xks_key_store" {
-  assert {
-    condition     = var.xks_key_id == null || var.custom_key_store_id != null
-    error_message = "custom_key_store_id must be configured when xks_key_id is set."
-  }
-}
-
-check "custom_key_store_compatibility" {
-  assert {
-    condition = var.custom_key_store_id == null || (
-      !var.create_external_enabled &&
-      !var.create_replica_enabled &&
-      !var.create_replica_external_enabled &&
-      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
-      var.key_usage == "ENCRYPT_DECRYPT" &&
-      !var.multi_region &&
-      !var.enable_key_rotation
-    )
-    error_message = "Keys in custom key stores must be standard, single-Region SYMMETRIC_DEFAULT keys with ENCRYPT_DECRYPT usage and automatic rotation disabled."
-  }
-}
-
-check "automatic_rotation" {
-  assert {
-    condition = !var.enabled || var.create_external_enabled || var.create_replica_enabled || var.create_replica_external_enabled || !var.enable_key_rotation || (
-      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" && var.custom_key_store_id == null
-    )
-    error_message = "Automatic rotation is supported only for AWS-generated SYMMETRIC_DEFAULT keys in the standard AWS KMS key store."
-  }
-}
-
-check "custom_rotation_period" {
-  assert {
-    condition = var.rotation_period_in_days == null || (
-      var.enable_key_rotation &&
-      !var.create_external_enabled &&
-      !var.create_replica_enabled &&
-      !var.create_replica_external_enabled &&
-      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
-      var.custom_key_store_id == null
-    )
-    error_message = "rotation_period_in_days requires automatic rotation on a standard AWS-generated SYMMETRIC_DEFAULT key."
-  }
-}
-
-check "alias_uniqueness" {
-  assert {
-    condition     = !var.enabled || !var.create_alias || !contains(var.aliases, local.primary_alias_name)
-    error_message = "aliases must not contain the primary alias created by alias/create_alias."
-  }
-}
-
 ####----------------------------------------------------------------------------------
 ## This terraform resource creates a KMS Customer Master Key (CMK) and its alias.
 ####----------------------------------------------------------------------------------

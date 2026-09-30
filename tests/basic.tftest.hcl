@@ -86,7 +86,7 @@ run "reject_multiple_key_variants" {
     create_replica_enabled  = true
   }
 
-  expect_failures = [check.key_variant]
+  expect_failures = [var.create_external_enabled]
 }
 
 run "reject_xks_without_store" {
@@ -97,7 +97,7 @@ run "reject_xks_without_store" {
     xks_key_id = "external-key-id"
   }
 
-  expect_failures = [check.xks_key_store]
+  expect_failures = [var.create_external_enabled]
 }
 
 run "reject_duplicate_primary_alias" {
@@ -109,7 +109,7 @@ run "reject_duplicate_primary_alias" {
     aliases = ["alias/duplicate"]
   }
 
-  expect_failures = [check.alias_uniqueness]
+  expect_failures = [var.aliases]
 }
 
 run "reject_conflicting_grant_constraints" {

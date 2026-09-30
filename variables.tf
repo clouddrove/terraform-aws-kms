@@ -121,6 +121,11 @@ variable "aliases" {
     ])
     error_message = "Every value in aliases must be a valid customer alias beginning with alias/; alias/aws/ is reserved by AWS."
   }
+
+  validation {
+    condition     = !var.create_alias || var.alias == "" || !contains(var.aliases, var.alias)
+    error_message = "aliases must not contain the explicit primary alias when create_alias is enabled."
+  }
 }
 
 variable "customer_master_key_spec" {
@@ -192,6 +197,53 @@ variable "create_external_enabled" {
   type        = bool
   default     = false
   description = "Determines whether an external CMK (externally provided material) will be created or a standard CMK (AWS provided material)"
+
+  validation {
+    condition     = length(compact([!var.create_external_enabled && !var.create_replica_enabled && !var.create_replica_external_enabled ? "standard" : null, var.create_external_enabled ? "external" : null, var.create_replica_enabled ? "replica" : null, var.create_replica_external_enabled ? "replica_external" : null])) == 1
+    error_message = "Select exactly one KMS key variant: standard, external, replica, or replica_external."
+  }
+
+  validation {
+    condition = var.xks_key_id == null || (
+      var.custom_key_store_id != null &&
+      !var.create_external_enabled &&
+      !var.create_replica_enabled &&
+      !var.create_replica_external_enabled
+    )
+    error_message = "custom_key_store_id must be configured and a standard key variant selected when xks_key_id is set."
+  }
+
+  validation {
+    condition = var.custom_key_store_id == null || (
+      !var.create_external_enabled &&
+      !var.create_replica_enabled &&
+      !var.create_replica_external_enabled &&
+      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
+      var.key_usage == "ENCRYPT_DECRYPT" &&
+      !var.multi_region &&
+      !var.enable_key_rotation
+    )
+    error_message = "Keys in custom key stores must be standard, single-Region SYMMETRIC_DEFAULT keys with ENCRYPT_DECRYPT usage and automatic rotation disabled."
+  }
+
+  validation {
+    condition = !var.enabled || var.create_external_enabled || var.create_replica_enabled || var.create_replica_external_enabled || !var.enable_key_rotation || (
+      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" && var.custom_key_store_id == null
+    )
+    error_message = "Automatic rotation is supported only for AWS-generated SYMMETRIC_DEFAULT keys in the standard AWS KMS key store."
+  }
+
+  validation {
+    condition = var.rotation_period_in_days == null || (
+      var.enable_key_rotation &&
+      !var.create_external_enabled &&
+      !var.create_replica_enabled &&
+      !var.create_replica_external_enabled &&
+      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
+      var.custom_key_store_id == null
+    )
+    error_message = "rotation_period_in_days requires automatic rotation on a standard AWS-generated SYMMETRIC_DEFAULT key."
+  }
 }
 
 variable "primary_external_key_arn" {
