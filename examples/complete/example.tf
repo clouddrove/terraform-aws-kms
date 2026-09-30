@@ -19,7 +19,7 @@ module "kms_key" {
   alias                   = "alias/cloudtrail_Name"
   kms_key_enabled         = false
   multi_region            = true
-  valid_to                = "2025-11-21T23:20:50Z"
+  valid_to                = "2030-11-21T23:20:50Z"
   policy                  = data.aws_iam_policy_document.default.json
 }
 

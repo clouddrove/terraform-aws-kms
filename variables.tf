@@ -42,12 +42,24 @@ variable "tags" {
   description = "Additional tags to apply to all resources managed by the module (merged with module.labels.tags via extra_tags)."
 }
 
+variable "region" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = "Region where KMS resources are managed. Defaults to the Region configured on the AWS provider. Requires AWS provider v6 or later."
+}
+
 # Module      : KMS KEY
 # Description : Provides a KMS customer master key.
 variable "deletion_window_in_days" {
   type        = number
   default     = 10
   description = "Duration in days after which the key is deleted after destruction of the resource."
+
+  validation {
+    condition     = var.deletion_window_in_days >= 7 && var.deletion_window_in_days <= 30
+    error_message = "deletion_window_in_days must be between 7 and 30."
+  }
 }
 
 variable "description" {
@@ -71,27 +83,87 @@ variable "kms_key_enabled" {
 variable "key_usage" {
   type        = string
   default     = "ENCRYPT_DECRYPT"
-  sensitive   = true
-  description = "Specifies the intended use of the key. Defaults to ENCRYPT_DECRYPT, and only symmetric encryption and decryption are supported."
+  description = "Intended cryptographic use of the key: ENCRYPT_DECRYPT, SIGN_VERIFY, or GENERATE_VERIFY_MAC."
 }
 
 variable "alias" {
   type        = string
   default     = ""
   description = "The display name of the alias. The name must start with the word `alias` followed by a forward slash."
+
+  validation {
+    condition = var.alias == "" || (
+      startswith(var.alias, "alias/") &&
+      !startswith(var.alias, "alias/aws/") &&
+      can(regex("^alias/[0-9A-Za-z/_-]+$", var.alias))
+    )
+    error_message = "alias must be empty or a valid customer alias beginning with alias/; alias/aws/ is reserved by AWS."
+  }
+}
+
+variable "create_alias" {
+  type        = bool
+  default     = true
+  description = "Whether to create the primary KMS alias. Additional aliases in aliases are controlled separately."
+}
+
+variable "aliases" {
+  type        = set(string)
+  default     = []
+  description = "Additional KMS aliases to create for the key."
+
+  validation {
+    condition = alltrue([
+      for alias_name in var.aliases :
+      startswith(alias_name, "alias/") &&
+      !startswith(alias_name, "alias/aws/") &&
+      can(regex("^alias/[0-9A-Za-z/_-]+$", alias_name))
+    ])
+    error_message = "Every value in aliases must be a valid customer alias beginning with alias/; alias/aws/ is reserved by AWS."
+  }
+
+  validation {
+    condition     = !var.create_alias || var.alias == "" || !contains(var.aliases, var.alias)
+    error_message = "aliases must not contain the explicit primary alias when create_alias is enabled."
+  }
 }
 
 variable "customer_master_key_spec" {
   type        = string
   default     = "SYMMETRIC_DEFAULT"
-  description = "Specifies whether the key contains a symmetric key or an asymmetric key pair and the encryption algorithms or signing algorithms that the key supports. Valid values: SYMMETRIC_DEFAULT, RSA_2048, RSA_3072, RSA_4096, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, or ECC_SECG_P256K1. Defaults to SYMMETRIC_DEFAULT."
-  sensitive   = true
+  description = "Cryptographic configuration of the key. Supports symmetric encryption, RSA, NIST/secp256k1/Edwards ECC, HMAC, ML-DSA, and SM2 (China Regions only) key specs supported by AWS KMS."
 }
 
 variable "enable_key_rotation" {
-  type        = string
+  type        = bool
   default     = true
   description = "Specifies whether key rotation is enabled."
+}
+
+variable "rotation_period_in_days" {
+  type        = number
+  default     = null
+  nullable    = true
+  description = "Custom number of days between automatic rotations for symmetric KMS keys. Valid values are 90 through 2560."
+
+  validation {
+    condition     = var.rotation_period_in_days == null ? true : var.rotation_period_in_days >= 90 && var.rotation_period_in_days <= 2560
+    error_message = "rotation_period_in_days must be null or between 90 and 2560."
+  }
+}
+
+variable "custom_key_store_id" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = "ID of an existing AWS KMS custom key store where the key is stored."
+}
+
+variable "xks_key_id" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = "External key ID in an existing external key store (XKS)."
 }
 
 variable "multi_region" {
@@ -108,20 +180,70 @@ variable "bypass_policy_lockout_safety_check" {
 
 variable "valid_to" {
   type        = string
-  default     = ""
+  default     = null
+  nullable    = true
   description = "Time at which the imported key material expires. When the key material expires, AWS KMS deletes the key material and the CMK becomes unusable. If not specified, key material does not expire"
 }
 
 variable "key_material_base64" {
   type        = string
   default     = null
-  description = "Base64 encoded 256-bit symmetric encryption key material to import. The CMK is permanently associated with this key material. External key only"
+  nullable    = true
+  sensitive   = true
+  description = "Base64-encoded key material to import. When null, an external key is created in PendingImport state. The value is stored in Terraform state; secure the state accordingly."
 }
 
 variable "create_external_enabled" {
   type        = bool
   default     = false
   description = "Determines whether an external CMK (externally provided material) will be created or a standard CMK (AWS provided material)"
+
+  validation {
+    condition     = length(compact([!var.create_external_enabled && !var.create_replica_enabled && !var.create_replica_external_enabled ? "standard" : null, var.create_external_enabled ? "external" : null, var.create_replica_enabled ? "replica" : null, var.create_replica_external_enabled ? "replica_external" : null])) == 1
+    error_message = "Select exactly one KMS key variant: standard, external, replica, or replica_external."
+  }
+
+  validation {
+    condition = var.xks_key_id == null || (
+      var.custom_key_store_id != null &&
+      !var.create_external_enabled &&
+      !var.create_replica_enabled &&
+      !var.create_replica_external_enabled
+    )
+    error_message = "custom_key_store_id must be configured and a standard key variant selected when xks_key_id is set."
+  }
+
+  validation {
+    condition = var.custom_key_store_id == null || (
+      !var.create_external_enabled &&
+      !var.create_replica_enabled &&
+      !var.create_replica_external_enabled &&
+      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
+      var.key_usage == "ENCRYPT_DECRYPT" &&
+      !var.multi_region &&
+      !var.enable_key_rotation
+    )
+    error_message = "Keys in custom key stores must be standard, single-Region SYMMETRIC_DEFAULT keys with ENCRYPT_DECRYPT usage and automatic rotation disabled."
+  }
+
+  validation {
+    condition = !var.enabled || var.create_external_enabled || var.create_replica_enabled || var.create_replica_external_enabled || !var.enable_key_rotation || (
+      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" && var.custom_key_store_id == null
+    )
+    error_message = "Automatic rotation is supported only for AWS-generated SYMMETRIC_DEFAULT keys in the standard AWS KMS key store."
+  }
+
+  validation {
+    condition = var.rotation_period_in_days == null ? true : (
+      var.enable_key_rotation &&
+      !var.create_external_enabled &&
+      !var.create_replica_enabled &&
+      !var.create_replica_external_enabled &&
+      var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
+      var.custom_key_store_id == null
+    )
+    error_message = "rotation_period_in_days requires automatic rotation on a standard AWS-generated SYMMETRIC_DEFAULT key."
+  }
 }
 
 variable "primary_external_key_arn" {
@@ -152,4 +274,27 @@ variable "create_replica_external_enabled" {
   type        = bool
   default     = false
   description = "Determines whether a replica external CMK will be created (externally provided material)"
+}
+
+variable "grants" {
+  type = map(object({
+    name                      = optional(string)
+    grantee_principal         = string
+    operations                = set(string)
+    retiring_principal        = optional(string)
+    grant_creation_tokens     = optional(set(string), [])
+    retire_on_delete          = optional(bool, false)
+    encryption_context_equals = optional(map(string))
+    encryption_context_subset = optional(map(string))
+  }))
+  default     = {}
+  description = "KMS grants to create for the managed key, keyed by a stable Terraform identifier."
+
+  validation {
+    condition = alltrue([
+      for grant in values(var.grants) :
+      !(grant.encryption_context_equals != null && grant.encryption_context_subset != null)
+    ])
+    error_message = "A grant cannot set both encryption_context_equals and encryption_context_subset."
+  }
 }

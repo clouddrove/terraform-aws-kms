@@ -31,12 +31,12 @@ badges:
 prerequesties:
   - name: Terraform
     url: https://learn.hashicorp.com/terraform/getting-started/install.html
-    version: ">= 1.6.6"
+    version: ">= 1.10.0"
 
 providers:
   - name: aws
     url: https://aws.amazon.com/
-    version: ">= 5.31.0"
+    version: ">= 6.21.0"
 
 module_dependencies:
   - name: Labels Module
@@ -44,7 +44,7 @@ module_dependencies:
     description: Provides resource tagging.
 
 description: |-
-  This terraform module creates a KMS Customer Master Key (CMK) and its alias.
+  This Terraform module creates AWS-generated, imported, multi-Region replica, and replica-imported KMS keys. It supports custom rotation periods, CloudHSM/XKS custom key stores, current asymmetric, HMAC, and post-quantum key specs, optional and additional aliases, grants, and per-resource Region selection.
 
 
 # How to use this project
@@ -65,7 +65,7 @@ usage : |-
       kms_key_enabled         = true
       multi_region            = true
       create_external_enabled = true
-      valid_to                = "2023-11-21T23:20:50Z"
+      valid_to                = "2030-11-21T23:20:50Z"
       key_material_base64     = "Wblj06fduthWggmsT0cLVoIMOkeLbc2kVfMud77i/JY="
       policy                  = data.aws_iam_policy_document.default.json
     }
@@ -170,3 +170,5 @@ usage : |-
       }
     }
   ```
+
+  The module also supports custom rotation periods, KMS custom/XKS key stores, modern asymmetric, HMAC, and post-quantum key specs, additional aliases, optional primary aliases, KMS grants, and per-resource Region selection. Use `rotation_period_in_days`, `custom_key_store_id`, `xks_key_id`, `customer_master_key_spec`, `aliases`, `create_alias`, `grants`, and `region` to configure these features.
