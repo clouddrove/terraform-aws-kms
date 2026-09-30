@@ -147,7 +147,7 @@ variable "rotation_period_in_days" {
   description = "Custom number of days between automatic rotations for symmetric KMS keys. Valid values are 90 through 2560."
 
   validation {
-    condition     = var.rotation_period_in_days == null || (var.rotation_period_in_days >= 90 && var.rotation_period_in_days <= 2560)
+    condition     = var.rotation_period_in_days == null ? true : var.rotation_period_in_days >= 90 && var.rotation_period_in_days <= 2560
     error_message = "rotation_period_in_days must be null or between 90 and 2560."
   }
 }
@@ -234,7 +234,7 @@ variable "create_external_enabled" {
   }
 
   validation {
-    condition = var.rotation_period_in_days == null || (
+    condition = var.rotation_period_in_days == null ? true : (
       var.enable_key_rotation &&
       !var.create_external_enabled &&
       !var.create_replica_enabled &&
