@@ -57,7 +57,7 @@ variable "deletion_window_in_days" {
   description = "Duration in days after which the key is deleted after destruction of the resource."
 
   validation {
-    condition     = var.deletion_window_in_days >= 7 && var.deletion_window_in_days <= 30
+    condition     = !var.enabled || (var.deletion_window_in_days >= 7 && var.deletion_window_in_days <= 30)
     error_message = "deletion_window_in_days must be between 7 and 30."
   }
 }
@@ -92,7 +92,7 @@ variable "alias" {
   description = "The display name of the alias. The name must start with the word `alias` followed by a forward slash."
 
   validation {
-    condition = var.alias == "" || (
+    condition = !var.enabled || var.alias == "" || (
       startswith(var.alias, "alias/") &&
       !startswith(var.alias, "alias/aws/") &&
       can(regex("^alias/[0-9A-Za-z/_-]+$", var.alias))
@@ -113,7 +113,7 @@ variable "aliases" {
   description = "Additional KMS aliases to create for the key."
 
   validation {
-    condition = alltrue([
+    condition = !var.enabled || alltrue([
       for alias_name in var.aliases :
       startswith(alias_name, "alias/") &&
       !startswith(alias_name, "alias/aws/") &&
@@ -123,7 +123,7 @@ variable "aliases" {
   }
 
   validation {
-    condition     = !var.create_alias || var.alias == "" || !contains(var.aliases, var.alias)
+    condition     = !var.enabled || !var.create_alias || var.alias == "" || !contains(var.aliases, var.alias)
     error_message = "aliases must not contain the explicit primary alias when create_alias is enabled."
   }
 }
@@ -147,7 +147,7 @@ variable "rotation_period_in_days" {
   description = "Custom number of days between automatic rotations for symmetric KMS keys. Valid values are 90 through 2560."
 
   validation {
-    condition     = var.rotation_period_in_days == null ? true : var.rotation_period_in_days >= 90 && var.rotation_period_in_days <= 2560
+    condition     = !var.enabled || (var.rotation_period_in_days == null ? true : var.rotation_period_in_days >= 90 && var.rotation_period_in_days <= 2560)
     error_message = "rotation_period_in_days must be null or between 90 and 2560."
   }
 }
@@ -199,12 +199,12 @@ variable "create_external_enabled" {
   description = "Determines whether an external CMK (externally provided material) will be created or a standard CMK (AWS provided material)"
 
   validation {
-    condition     = length(compact([!var.create_external_enabled && !var.create_replica_enabled && !var.create_replica_external_enabled ? "standard" : null, var.create_external_enabled ? "external" : null, var.create_replica_enabled ? "replica" : null, var.create_replica_external_enabled ? "replica_external" : null])) == 1
+    condition     = !var.enabled || length(compact([!var.create_external_enabled && !var.create_replica_enabled && !var.create_replica_external_enabled ? "standard" : null, var.create_external_enabled ? "external" : null, var.create_replica_enabled ? "replica" : null, var.create_replica_external_enabled ? "replica_external" : null])) == 1
     error_message = "Select exactly one KMS key variant: standard, external, replica, or replica_external."
   }
 
   validation {
-    condition = var.xks_key_id == null || (
+    condition = !var.enabled || var.xks_key_id == null || (
       var.custom_key_store_id != null &&
       !var.create_external_enabled &&
       !var.create_replica_enabled &&
@@ -214,7 +214,7 @@ variable "create_external_enabled" {
   }
 
   validation {
-    condition = var.custom_key_store_id == null || (
+    condition = !var.enabled || var.custom_key_store_id == null || (
       !var.create_external_enabled &&
       !var.create_replica_enabled &&
       !var.create_replica_external_enabled &&
@@ -234,14 +234,14 @@ variable "create_external_enabled" {
   }
 
   validation {
-    condition = var.rotation_period_in_days == null ? true : (
+    condition = !var.enabled || (var.rotation_period_in_days == null ? true : (
       var.enable_key_rotation &&
       !var.create_external_enabled &&
       !var.create_replica_enabled &&
       !var.create_replica_external_enabled &&
       var.customer_master_key_spec == "SYMMETRIC_DEFAULT" &&
       var.custom_key_store_id == null
-    )
+    ))
     error_message = "rotation_period_in_days requires automatic rotation on a standard AWS-generated SYMMETRIC_DEFAULT key."
   }
 }
@@ -291,7 +291,7 @@ variable "grants" {
   description = "KMS grants to create for the managed key, keyed by a stable Terraform identifier."
 
   validation {
-    condition = alltrue([
+    condition = !var.enabled || alltrue([
       for grant in values(var.grants) :
       !(grant.encryption_context_equals != null && grant.encryption_context_subset != null)
     ])

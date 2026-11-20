@@ -15,12 +15,6 @@ module "labels" {
 }
 
 locals {
-  selected_key_variants = compact([
-    !var.create_external_enabled && !var.create_replica_enabled && !var.create_replica_external_enabled ? "standard" : null,
-    var.create_external_enabled ? "external" : null,
-    var.create_replica_enabled ? "replica" : null,
-    var.create_replica_external_enabled ? "replica_external" : null,
-  ])
   key_id = try(
     aws_kms_key.default[0].key_id,
     aws_kms_external_key.external[0].id,

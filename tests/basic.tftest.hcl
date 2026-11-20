@@ -89,7 +89,7 @@ run "reject_multiple_key_variants" {
   expect_failures = [var.create_external_enabled]
 }
 
-run "reject_xks_without_store" {
+run "disabled_module_ignores_unused_settings" {
   command = plan
 
   variables {
@@ -97,7 +97,18 @@ run "reject_xks_without_store" {
     xks_key_id = "external-key-id"
   }
 
-  expect_failures = [var.create_external_enabled]
+  assert {
+    condition = sum([
+      length(aws_kms_key.default),
+      length(aws_kms_alias.default),
+      length(aws_kms_external_key.external),
+      length(aws_kms_replica_key.replica),
+      length(aws_kms_replica_external_key.replica_external),
+      length(aws_kms_alias.additional),
+      length(aws_kms_grant.this),
+    ]) == 0
+    error_message = "A disabled module must create no resources and must not validate unused KMS settings."
+  }
 }
 
 run "reject_duplicate_primary_alias" {
@@ -116,7 +127,8 @@ run "reject_conflicting_grant_constraints" {
   command = plan
 
   variables {
-    enabled = false
+    name    = "grant-validation"
+    enabled = true
     grants = {
       invalid = {
         grantee_principal         = "arn:aws:iam::111122223333:role/application"
