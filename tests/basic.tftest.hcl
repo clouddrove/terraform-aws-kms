@@ -18,7 +18,7 @@ run "standard_key_features" {
 
   variables {
     name         = "test"
-    region       = "us-west-2"
+    region       = "ca-central-1"
     create_alias = false
     aliases      = ["alias/test-secondary"]
     grants = {
@@ -31,7 +31,7 @@ run "standard_key_features" {
   }
 
   assert {
-    condition     = length(aws_kms_key.default) == 1 && aws_kms_key.default[0].region == "us-west-2"
+    condition     = length(aws_kms_key.default) == 1 && aws_kms_key.default[0].region == "ca-central-1"
     error_message = "The standard key must be created in the requested Region."
   }
 
