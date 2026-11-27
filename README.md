@@ -72,8 +72,6 @@ This table contains both Prerequisites and Providers:
 
 📌 For additional usage examples, check the complete list under [`examples/`](./examples) directory.
 
-The module supports AWS-generated, imported, multi-Region replica, and replica-imported KMS keys. Current features include custom rotation periods, CloudHSM/XKS custom key stores, asymmetric/HMAC/post-quantum key specs, optional and additional aliases, grants with encryption-context constraints, and AWS-provider-v6 per-resource Region selection.
-
 
 
 ## Inputs and Outputs
