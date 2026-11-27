@@ -4,7 +4,7 @@
 
 
 provider "aws" {
-  region = "us-east-1"
+  region = "ca-central-1"
 }
 
 ####----------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ module "kms_key" {
   multi_region            = true
   create_external_enabled = true
   key_material_base64     = "n3d9XOrZBKgIzrPkaYhI9ulw3eNyV/61tUPSlGCO/RI="
-  valid_to                = "2025-11-21T23:20:50Z"
+  valid_to                = "2030-11-21T23:20:50Z"
   policy                  = data.aws_iam_policy_document.default.json
 }
 

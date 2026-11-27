@@ -27,3 +27,29 @@ output "target_key_id" {
   value       = try(aws_kms_alias.default[0].target_key_id, null)
   description = "Identifier for the key for which the alias is for, can be either an ARN or key_id."
 }
+
+output "additional_alias_arns" {
+  value       = { for key, alias in aws_kms_alias.additional : key => alias.arn }
+  description = "ARNs of additional aliases created for the key."
+}
+
+output "grant_ids" {
+  value       = { for name, grant in aws_kms_grant.this : name => grant.grant_id }
+  description = "Grant IDs keyed by the grant map key."
+}
+
+output "grant_tokens" {
+  value       = { for name, grant in aws_kms_grant.this : name => grant.grant_token }
+  description = "Grant tokens keyed by the grant map key. These can be used before a new grant reaches eventual consistency."
+  sensitive   = true
+}
+
+output "key_state" {
+  value       = try(aws_kms_external_key.external[0].key_state, aws_kms_replica_external_key.replica_external[0].key_state, null)
+  description = "State of an external or replica external KMS key. Null for AWS-generated keys."
+}
+
+output "expiration_model" {
+  value       = try(aws_kms_external_key.external[0].expiration_model, aws_kms_replica_external_key.replica_external[0].expiration_model, null)
+  description = "Whether imported key material expires. Null for AWS-generated keys."
+}

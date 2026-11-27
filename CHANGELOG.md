@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Custom automatic-rotation periods, custom and external key-store support, additional aliases, optional primary aliases, and KMS grants.
+- Per-resource Region selection and support for current AWS KMS key specifications through AWS provider v6.21 or later.
+- Grant token, imported-key state, and expiration-model outputs.
+
+### Changed
+
+- Apply `kms_key_enabled` consistently to standard, external, and replica keys.
+- Create external keys without material in `PendingImport` state and mark imported key material as sensitive.
+- Forward all module inputs through the wrapper module.
+
+### Fixed
+
+- Validate mutually exclusive key variants and AWS KMS rotation/custom-key-store constraints before apply.
+- Require an XKS key to reference a custom key store and avoid apply-time values in grant `for_each`.
+
 ## [1.3.1] - 2023-08-25
 ### :sparkles: New Features
 - [`b3d8b40`](https://github.com/clouddrove/terraform-aws-kms/commit/b3d8b4021a72d8a758e20d15b56761b3337e0485) - add deepsource & added assignees,reviewer in dependabot *(commit by [@Tanveer143s](https://github.com/Tanveer143s))*

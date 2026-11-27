@@ -4,6 +4,9 @@ on:
     paths:
       - '**/*.tf'
       - '*.tf'
+permissions:
+  contents: read
+  id-token: write
 jobs:
   complete:
     if: github.actor != 'dependabot[bot]'
